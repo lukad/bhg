@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Berichtsheft</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+	<header>
+		<h1>Ausbildungsnachweis Nr.</h1>
+		Name: {{ last_name }} Vorname: {{ name }} Ausbildungsabteilung: {{ department }}
+		Ausbildungswoche vom: {{ from }} bis: {{ to }} Ausbildungsjahr: {{ year_of_training }}
+	</header>
+	<div class="container">
+		<h1>ol</h1>
+
+		<table class="table">
+			<tr>
+				<th>Tag</th>
+				<th>Tätigkeiten</th>
+			</tr>
+			{% for day in days %}
+				<tr>
+					<td>{{ day.name }}</td>
+					<td>
+						<ul>
+							{% for activity in day.activities %}
+								<li>{{ activity }}</li>
+							{% endfor %}
+						</ul>
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+
+	</div>
+</body>
+</html>
