@@ -1,5 +1,5 @@
 # activity name;min duration in hours;max duration;weight
 Youtube Videos gucken;2;4;3
-News lesen;2.5;3;2
-Wichtige mails schreiben;2;3;1
-Ganz wichtige mails schreiben;1;3.5;2
+News lesen;2.5;3;1
+Wichtige mails schreiben;2;3;4
+Ganz wichtige mails schreiben;1;3.5;5

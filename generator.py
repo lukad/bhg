@@ -4,6 +4,7 @@ import argparse
 from jinja2 import Template
 from collections import namedtuple
 import datetime as dt
+import random
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-n", "--name", default="Foo", help="Your first name")
@@ -25,21 +26,41 @@ def parse(line):
         return None
     return Activity(items[0], float(items[1]), float(items[2]), int(items[3]))
 
+activities = []
+
 with open("example-input", "r") as f:
     for line in f:
-        print(parse(line))
+        activity = parse(line)
+        if activity is not None:
+            activities.append(activity)
+
+def select_weighted(activities):
+    total = sum(activity.weight for activity in activities)
+    rnd = random.random() * total
+    for activity in activities:
+        if rnd < activity.weight:
+            return activity
+        rnd -= activity.weight
 
 def select_activity(activities, hours_to_fill, already_done):
-    pass
+    return select_weighted([a for a in activities if a.min_duration <= hours_to_fill and a not in already_done])
 
 begin = dt.datetime.strptime(args.begin, "%Y-%m-%d")
 end = dt.datetime.strptime(args.end, "%Y-%m-%d")
 
-for i in range((end - begin).days + 1):
-    day = (begin + dt.timedelta(days=i)).date()
-    if day.weekday() in [5,6]:
-        continue
-    print(day)
+
+def main():
+   print(select_activity(activities, args.work_hours, []))
+
+if __name__ == '__main__':
+    main()
+    
+
+#for i in range((end - begin).days + 1):
+#    day = (begin + dt.timedelta(days=i)).date()
+#    if day.weekday() in [5,6]:
+#        continue
+#    print(day)
         
 
 # template_string = ""
