@@ -8,9 +8,9 @@
 </head>
 <body>
 	<header>
-		<h1>Ausbildungsnachweis Nr.</h1>
+		<h1>Ausbildungsnachweis Nr. {{ week }}</h1>
 		Name: {{ last_name }} Vorname: {{ name }} Ausbildungsabteilung: {{ department }}
-		Ausbildungswoche vom: {{ from }} bis: {{ to }} Ausbildungsjahr: {{ year_of_training }}
+		Ausbildungswoche vom: {{ begin }} bis: {{ end }} Ausbildungsjahr: {{ year_of_training }}
 	</header>
 	<div class="container">
 		<h1>ol</h1>
@@ -22,10 +22,10 @@
 			</tr>
 			{% for day in days %}
 				<tr>
-					<td>{{ day.name }}</td>
+					<td></td>
 					<td>
 						<ul>
-							{% for activity in day.activities %}
+							{% for activity in day %}
 								<li>{{ activity }}</li>
 							{% endfor %}
 						</ul>

@@ -58,32 +58,38 @@ def select_filler(activities, hours_to_fill, already_done):
 begin = dt.datetime.strptime(args.begin, "%Y-%m-%d")
 end = dt.datetime.strptime(args.end, "%Y-%m-%d")
 
+template_string = ""
+with open("template.html", "r") as f:
+     template_string = f.read()
+
+template = Template(template_string)
+
+def save_week(begin, end, number, days):
+    with open("%d.hmtl" % number, "w") as f:
+        f.write(template.render(days=days, name=args.name, last_name=args.last_name, week=number, begin=begin, end=end))
+        
 
 def main():
+    week = 1
+    days = []
     for i in range((end - begin).days + 1):
         day = (begin + dt.timedelta(days=i)).date()
         if day.weekday() in [5,6]:
             continue
         hours_worked = 0
         done = []
-        print(day)
         while hours_worked < args.work_hours:
             activity = select_activity(activities, args.work_hours - hours_worked, done)
             if activity is None:
                 activity = select_filler(activities, args.work_hours - hours_worked, done)
             done.append(activity)
             hours_worked += activity.min_duration
-        print(done)
-        print("total hours:", sum(a.min_duration for a in done))
+        days.append(done)
+
+        if day.weekday() == 4:
+            save_week(day - dt.timedelta(days=-4), day, week, days)
+            week += 1
+            days = []
 
 if __name__ == '__main__':
     main()
-
-# template_string = ""
-# with open("template.html", "r") as f:
-#     template_string = f.read()
-
-
-
-# template = Template(template_string)
-# print(template.render(days=days, name=args.name, last_name=args.last_name))
