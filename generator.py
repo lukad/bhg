@@ -16,15 +16,20 @@ parser.add_argument("-w", "--work-hours", default=8.0, help="How many hours you 
 
 args = parser.parse_args()
 
-Activity = namedtuple("Activity", "name min_duration max_duration weight")
+Activity = namedtuple("Activity", "name min_duration max_duration weight filler")
 
 def parse(line):
     if line.startswith("#"):
         return None
     items = line.rstrip().split(";")
-    if len(items) < 4:
+    if len(items) < 5:
         return None
-    return Activity(items[0], float(items[1]), float(items[2]), int(items[3]))
+    return Activity(
+            name = items[0],
+            min_duration = float(items[1]),
+            max_duration = float(items[2]),
+            weight = int(items[3]),
+            filler = items[4] == "1")
 
 activities = []
 
@@ -43,25 +48,36 @@ def select_weighted(activities):
         rnd -= activity.weight
 
 def select_activity(activities, hours_to_fill, already_done):
-    return select_weighted([a for a in activities if a.min_duration <= hours_to_fill and a not in already_done])
+    l = [a for a in activities if a not in already_done and a.min_duration <= hours_to_fill and not a.filler]
+    return select_weighted(l)
+
+def select_filler(activities, hours_to_fill, already_done):
+    l = [a for a in activities if a not in already_done and a.min_duration <= hours_to_fill and a.filler]
+    return random.choice(l)
 
 begin = dt.datetime.strptime(args.begin, "%Y-%m-%d")
 end = dt.datetime.strptime(args.end, "%Y-%m-%d")
 
 
 def main():
-   print(select_activity(activities, args.work_hours, []))
+    for i in range((end - begin).days + 1):
+        day = (begin + dt.timedelta(days=i)).date()
+        if day.weekday() in [5,6]:
+            continue
+        hours_worked = 0
+        done = []
+        print(day)
+        while hours_worked < args.work_hours:
+            activity = select_activity(activities, args.work_hours - hours_worked, done)
+            if activity is None:
+                activity = select_filler(activities, args.work_hours - hours_worked, done)
+            done.append(activity)
+            hours_worked += activity.min_duration
+        print(done)
+        print("total hours:", sum(a.min_duration for a in done))
 
 if __name__ == '__main__':
     main()
-    
-
-#for i in range((end - begin).days + 1):
-#    day = (begin + dt.timedelta(days=i)).date()
-#    if day.weekday() in [5,6]:
-#        continue
-#    print(day)
-        
 
 # template_string = ""
 # with open("template.html", "r") as f:
