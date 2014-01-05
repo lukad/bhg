@@ -19,18 +19,24 @@
 			<tr>
 				<th>Tag</th>
 				<th>Tätigkeiten</th>
+				<th>Dauer</th>
 			</tr>
-			{% for day in days %}
+				{% set counter = 1 %}
+				{% for day in days %}
+					{% for activity in day %}
 				<tr>
-					<td></td>
+					<td>{{ counter }}</td>
 					<td>
 						<ul>
-							{% for activity in day %}
-								<li>{{ activity }}</li>
-							{% endfor %}
+								<li>{{ activity["name"] }}</li>
 						</ul>
 					</td>
+					<td>
+						 {{ activity["min_duration"] }}
+					</td>
 				</tr>
+				{% endfor %}
+				{% set counter = counter + 1 %}
 			{% endfor %}
 		</table>
 
