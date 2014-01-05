@@ -9,10 +9,10 @@ import random
 parser = argparse.ArgumentParser()
 parser.add_argument("-n", "--name", default="Foo", help="Your first name")
 parser.add_argument("-l", "--last-name", default="Bar", help="Your last name")
-parser.add_argument("-b", "--begin", help="From wich date to begin (YYYY-MM-DD)")
-parser.add_argument("-e", "--end", help="Stop at this date (YYYY-MM-DD)")
+parser.add_argument("-b", "--begin", required=True, help="From wich date to begin (YYYY-MM-DD)")
+parser.add_argument("-e", "--end", required=True, help="Stop at this date (YYYY-MM-DD)")
 parser.add_argument("-s", "--start-with", default=1, help="Start numbering with this number")
-parser.add_argument("-w", "--work-hours", default=7.5, help="How many hours you work per day")
+parser.add_argument("-w", "--work-hours", default=8.0, help="How many hours you work per day")
 
 args = parser.parse_args()
 
