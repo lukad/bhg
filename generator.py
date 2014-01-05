@@ -87,7 +87,7 @@ def main():
         days.append(done)
 
         if day.weekday() == 4:
-            save_week(day - dt.timedelta(days=-4), day, week, days)
+            save_week(day - dt.timedelta(days=4), day, week, days)
             week += 1
             days = []
 
