@@ -22,7 +22,7 @@ def parse(line):
     if line.startswith("#"):
         return None
     items = line.rstrip().split(";")
-    if len(items) < 3:
+    if len(items) < 4:
         return None
     return Activity(items[0], float(items[1]), float(items[2]), int(items[3]))
 
