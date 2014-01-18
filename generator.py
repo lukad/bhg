@@ -68,9 +68,10 @@ def save_week(begin, end, number, days):
     with open("%d.hmtl" % number, "w") as f:
         f.write(template.render(days=days, name=args.name, last_name=args.last_name, week=number, begin=begin, end=end))
         
+weekdays = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"]
 
 def main():
-    week = 1
+    week = args.start_with
     days = []
     for i in range((end - begin).days + 1):
         day = (begin + dt.timedelta(days=i)).date()
@@ -84,7 +85,7 @@ def main():
                 activity = select_filler(activities, args.work_hours - hours_worked, done)
             done.append(activity)
             hours_worked += activity.min_duration
-        days.append(done)
+        days.append({"name": weekdays[day.weekday()], "activities": done})
 
         if day.weekday() == 4:
             save_week(day - dt.timedelta(days=4), day, week, days)

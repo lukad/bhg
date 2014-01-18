@@ -13,7 +13,6 @@
 		Ausbildungswoche vom: {{ begin }} bis: {{ end }} Ausbildungsjahr: {{ year_of_training }}
 	</header>
 	<div class="container">
-		<h1>ol</h1>
 
 		<table class="table">
 			<tr>
@@ -21,22 +20,22 @@
 				<th>Tätigkeiten</th>
 				<th>Dauer</th>
 			</tr>
-				{% set counter = 1 %}
-				{% for day in days %}
-					{% for activity in day %}
-				<tr>
-					<td>{{ counter }}</td>
-					<td>
-						<ul>
-								<li>{{ activity["name"] }}</li>
-						</ul>
-					</td>
-					<td>
-						 {{ activity["min_duration"] }}
-					</td>
-				</tr>
-				{% endfor %}
-				{% set counter = counter + 1 %}
+			{% for day in days %}
+			<tr>
+				<td>{{ day["name"] }}</td>
+				<td>
+					<ul>
+					{% for activity in day["activities"] %}
+						<li>{{ activity["name"] }}</li>
+					{% endfor %}
+					</ul>
+				</td>
+				<td>
+					{% for activity in day["activities"] %}
+						<li>{{ activity["min_duration"] }}</li>
+					{% endfor %}
+				</td>
+			</tr>
 			{% endfor %}
 		</table>
 
