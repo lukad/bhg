@@ -85,7 +85,7 @@ def main():
                 activity = select_filler(activities, args.work_hours - hours_worked, done)
             done.append(activity)
             hours_worked += activity.min_duration
-        days.append({"name": weekdays[day.weekday()], "activities": done})
+        days.append({"name": weekdays[day.weekday()], "activities": done, "hours_worked": hours_worked})
 
         if day.weekday() == 4:
             save_week(day - dt.timedelta(days=4), day, week, days)

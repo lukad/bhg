@@ -5,6 +5,11 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<style>
+		.duration {
+			list-style-type: none;
+		}
+	</style>
 </head>
 <body>
 	<header>
@@ -31,10 +36,16 @@
 					</ul>
 				</td>
 				<td>
+					<ul class="duration">
 					{% for activity in day["activities"] %}
 						<li>{{ activity["min_duration"] }}</li>
 					{% endfor %}
+					</ul>
 				</td>
+			</tr>
+			<tr>
+				<td colspan='2'>Total</td>
+				<td>{{ day["hours_worked"] }}</td>
 			</tr>
 			{% endfor %}
 		</table>
