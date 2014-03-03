@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+# -*- coding: utf-8 -*-
 
 import argparse
 from appy.pod.renderer import Renderer
@@ -20,6 +21,8 @@ parser.add_argument("-t", "--template", required=True, help="Template file")
 args = parser.parse_args()
 
 Activity = namedtuple("Activity", "name min_duration max_duration weight filler")
+
+months = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
 
 def parse(line):
     if line.startswith("#"):
@@ -61,11 +64,12 @@ def select_filler(activities, hours_to_fill, already_done):
 begin = dt.datetime.strptime(args.begin, "%Y-%m-%d")
 end = dt.datetime.strptime(args.end, "%Y-%m-%d")
 
-def save_week(begin, end, number, days):
+def save_week(begin, end, month, number, days):
     renderer = Renderer(args.template, {
         'days': days,
         'begin': begin,
         'end': end,
+        'month': months[month-1],
         'number': number,
         'name': args.name,
         'lastname': args.lastname,
@@ -90,10 +94,11 @@ def main():
                 activity = select_filler(activities, args.work_hours - hours_worked, done)
             done.append(activity)
             hours_worked += activity.min_duration
-        days.append({"name": weekdays[day.weekday()], "date": day, "activities": done, "hours_worked": hours_worked})
+        days.append({"name": weekdays[day.weekday()], "date": day.strftime("%d.%m.%Y"), "activities": done, "hours_worked": hours_worked})
 
         if day.weekday() == 4:
-            save_week(day - dt.timedelta(days=4), day, week, days)
+            week_begin = day - dt.timedelta(days=4)
+            save_week(week_begin, day, week_begin.month, week, days)
             week += 1
             days = []
 
