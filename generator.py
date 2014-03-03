@@ -12,6 +12,7 @@ parser.add_argument("-l", "--lastname", required=True, help="Your last name")
 parser.add_argument("-d", "--division", required=True, help="Your division")
 parser.add_argument("-b", "--begin", required=True, help="From wich date to begin (YYYY-MM-DD)")
 parser.add_argument("-e", "--end", required=True, help="Stop at this date (YYYY-MM-DD)")
+parser.add_argument("-i", "--input", required=True, help="Input file with activities")
 parser.add_argument("-s", "--start-with", default=1, help="Start numbering with this number")
 parser.add_argument("-w", "--work-hours", default=8.0, help="How many hours you work per day")
 parser.add_argument("-t", "--template", required=True, help="Template file")
@@ -35,7 +36,7 @@ def parse(line):
 
 activities = []
 
-with open("example-input", "r") as f:
+with open(args.input, "r") as f:
     for line in f:
         activity = parse(line)
         if activity is not None:
