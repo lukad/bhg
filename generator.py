@@ -69,7 +69,7 @@ def save_week(begin, end, number, days):
         'name': args.name,
         'lastname': args.lastname,
         'division': args.division
-        }, "%d.odt" % number)
+        }, "%s-%s.odt" % (begin, end))
     renderer.run()
         
 weekdays = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"]
