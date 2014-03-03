@@ -9,6 +9,7 @@ import random
 parser = argparse.ArgumentParser()
 parser.add_argument("-n", "--name", required=True, help="Your first name")
 parser.add_argument("-l", "--lastname", required=True, help="Your last name")
+parser.add_argument("-d", "--division", required=True, help="Your division")
 parser.add_argument("-b", "--begin", required=True, help="From wich date to begin (YYYY-MM-DD)")
 parser.add_argument("-e", "--end", required=True, help="Stop at this date (YYYY-MM-DD)")
 parser.add_argument("-s", "--start-with", default=1, help="Start numbering with this number")
@@ -66,7 +67,8 @@ def save_week(begin, end, number, days):
         'end': end,
         'number': number,
         'name': args.name,
-        'lastname': args.lastname
+        'lastname': args.lastname,
+        'division': args.division
         }, "%d.odt" % number)
     renderer.run()
         
