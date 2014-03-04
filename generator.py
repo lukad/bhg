@@ -11,8 +11,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-n", "--name", required=True, help="Your first name")
 parser.add_argument("-l", "--lastname", required=True, help="Your last name")
 parser.add_argument("-d", "--division", required=True, help="Your division")
-parser.add_argument("-b", "--begin", required=True, help="From wich date to begin (YYYY-MM-DD)")
-parser.add_argument("-e", "--end", required=True, help="Stop at this date (YYYY-MM-DD)")
+parser.add_argument("-b", "--begin", required=True, help="From wich date to begin (DD-MM-YYYY)")
+parser.add_argument("-e", "--end", required=True, help="Stop at this date (DD-MM-YYYY)")
 parser.add_argument("-i", "--input", required=True, help="Input file with activities")
 parser.add_argument("-s", "--start-with", default=1, help="Start numbering with this number")
 parser.add_argument("-w", "--work-hours", default=8.0, help="How many hours you work per day")
@@ -61,8 +61,8 @@ def select_filler(activities, hours_to_fill, already_done):
     l = [a for a in activities if a not in already_done and a.min_duration <= hours_to_fill and a.filler]
     return random.choice(l)
 
-begin = dt.datetime.strptime(args.begin, "%Y-%m-%d")
-end = dt.datetime.strptime(args.end, "%Y-%m-%d")
+begin = dt.datetime.strptime(args.begin, "%d.%m.%Y")
+end = dt.datetime.strptime(args.end, "%d.%m.%Y")
 
 def save_week(begin, end, month, number, days):
     renderer = Renderer(args.template, {
