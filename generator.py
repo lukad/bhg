@@ -1,22 +1,28 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
 
 import argparse
-from jinja2 import Template
+from appy.pod.renderer import Renderer
 from collections import namedtuple
 import datetime as dt
 import random
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-n", "--name", required=True, help="Your first name")
-parser.add_argument("-l", "--last-name", required=True, help="Your last name")
-parser.add_argument("-b", "--begin", required=True, help="From wich date to begin (YYYY-MM-DD)")
-parser.add_argument("-e", "--end", required=True, help="Stop at this date (YYYY-MM-DD)")
+parser.add_argument("-l", "--lastname", required=True, help="Your last name")
+parser.add_argument("-d", "--division", required=True, help="Your division")
+parser.add_argument("-b", "--begin", required=True, help="From wich date to begin (DD-MM-YYYY)")
+parser.add_argument("-e", "--end", required=True, help="Stop at this date (DD-MM-YYYY)")
+parser.add_argument("-i", "--input", required=True, help="Input file with activities")
 parser.add_argument("-s", "--start-with", default=1, help="Start numbering with this number")
 parser.add_argument("-w", "--work-hours", default=8.0, help="How many hours you work per day")
+parser.add_argument("-t", "--template", required=True, help="Template file")
 
 args = parser.parse_args()
 
 Activity = namedtuple("Activity", "name min_duration max_duration weight filler")
+
+months = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
 
 def parse(line):
     if line.startswith("#"):
@@ -33,7 +39,7 @@ def parse(line):
 
 activities = []
 
-with open("example-input", "r") as f:
+with open(args.input, "r") as f:
     for line in f:
         activity = parse(line)
         if activity is not None:
@@ -55,18 +61,21 @@ def select_filler(activities, hours_to_fill, already_done):
     l = [a for a in activities if a not in already_done and a.min_duration <= hours_to_fill and a.filler]
     return random.choice(l)
 
-begin = dt.datetime.strptime(args.begin, "%Y-%m-%d")
-end = dt.datetime.strptime(args.end, "%Y-%m-%d")
+begin = dt.datetime.strptime(args.begin, "%d.%m.%Y")
+end = dt.datetime.strptime(args.end, "%d.%m.%Y")
 
-template_string = ""
-with open("template.html", "r") as f:
-     template_string = f.read()
-
-template = Template(template_string)
-
-def save_week(begin, end, number, days):
-    with open("%d.hmtl" % number, "w") as f:
-        f.write(template.render(days=days, name=args.name, last_name=args.last_name, week=number, begin=begin, end=end))
+def save_week(begin, end, month, number, days):
+    renderer = Renderer(args.template, {
+        'days': days,
+        'begin': begin,
+        'end': end,
+        'month': months[month-1],
+        'number': number,
+        'name': args.name,
+        'lastname': args.lastname,
+        'division': args.division
+        }, "%s-%s.odt" % (begin, end))
+    renderer.run()
         
 weekdays = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"]
 
@@ -85,10 +94,11 @@ def main():
                 activity = select_filler(activities, args.work_hours - hours_worked, done)
             done.append(activity)
             hours_worked += activity.min_duration
-        days.append({"name": weekdays[day.weekday()], "activities": done, "hours_worked": hours_worked})
+        days.append({"name": weekdays[day.weekday()], "date": day.strftime("%d.%m.%Y"), "activities": done, "hours_worked": hours_worked})
 
         if day.weekday() == 4:
-            save_week(day - dt.timedelta(days=4), day, week, days)
+            week_begin = day - dt.timedelta(days=4)
+            save_week(week_begin, day, week_begin.month, week, days)
             week += 1
             days = []
 
