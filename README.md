@@ -13,8 +13,8 @@
 2. Let's do it!
 
         $ mkdir build && cd build
-        $ ../bhg.py -n Luka -l Dornhecker -dFoo -i ../example-input -b 01.08.2011 -e 31.07.2014
-		$ ../make-pdf
+        $ ../bhg.py -n Luka -l Dornhecker -d "Your division" -t ../template.odt -i ../example-input -b 01.08.2011 -e 31.07.2014
+        $ ../make-pdf.sh
 
 3. You should now have a file called `out.pdf`
 4. Profit
