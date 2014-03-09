@@ -72,6 +72,7 @@ def save_week(begin, end, month, number, days):
         'month': months[month-1],
         'number': number,
         'name': args.name,
+        'year': begin.year,
         'lastname': args.lastname,
         'division': args.division
         }, "%s-%s.odt" % (begin, end))
