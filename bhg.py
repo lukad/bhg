@@ -15,12 +15,12 @@ parser.add_argument("-b", "--begin", required=True, help="From wich date to begi
 parser.add_argument("-e", "--end", required=True, help="Stop at this date (DD.MM.YYYY)")
 parser.add_argument("-i", "--input", required=True, help="Input file with activities")
 parser.add_argument("-s", "--start-with", default=1, help="Start numbering with this number")
-parser.add_argument("-w", "--work-hours", default=8.0, help="How many hours you work per day")
+parser.add_argument("-w", "--work-hours", default=8.0, type=float, help="How many hours you work per day")
 parser.add_argument("-t", "--template", required=True, help="Template file")
 
 args = parser.parse_args()
 
-Activity = namedtuple("Activity", "name min_duration max_duration weight filler")
+Activity = namedtuple("Activity", "name duration weight filler")
 
 months = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
 
@@ -28,14 +28,13 @@ def parse(line):
     if line.startswith("#"):
         return None
     items = line.rstrip().split(";")
-    if len(items) < 5:
+    if len(items) < 4:
         return None
     return Activity(
             name = items[0],
-            min_duration = float(items[1]),
-            max_duration = float(items[2]),
-            weight = int(items[3]),
-            filler = items[4] == "1")
+            duration = float(items[1]),
+            weight = int(items[2]),
+            filler = items[3] == "1")
 
 activities = []
 
@@ -43,22 +42,14 @@ with open(args.input, "r") as f:
     for line in f:
         activity = parse(line)
         if activity is not None:
-            activities.append(activity)
-
-def select_weighted(activities):
-    total = sum(activity.weight for activity in activities)
-    rnd = random.random() * total
-    for activity in activities:
-        if rnd < activity.weight:
-            return activity
-        rnd -= activity.weight
+            activities += [activity] * activity.weight
 
 def select_activity(activities, hours_to_fill, already_done):
-    l = [a for a in activities if a not in already_done and a.min_duration <= hours_to_fill and not a.filler]
-    return select_weighted(l)
+    l = [a for a in activities if a not in already_done and a.duration <= hours_to_fill and not a.filler]
+    return random.choice(l)
 
 def select_filler(activities, hours_to_fill, already_done):
-    l = [a for a in activities if a not in already_done and a.min_duration <= hours_to_fill and a.filler]
+    l = [a for a in activities if a not in already_done and a.duration <= hours_to_fill and a.filler]
     return random.choice(l)
 
 begin = dt.datetime.strptime(args.begin, "%d.%m.%Y")
@@ -94,7 +85,7 @@ def main():
             if activity is None:
                 activity = select_filler(activities, args.work_hours - hours_worked, done)
             done.append(activity)
-            hours_worked += activity.min_duration
+            hours_worked += activity.duration
         days.append({"name": weekdays[day.weekday()], "date": day.strftime("%d.%m.%Y"), "activities": done, "hours_worked": hours_worked})
 
         if day.weekday() == 4:
