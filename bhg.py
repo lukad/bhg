@@ -14,7 +14,7 @@ parser.add_argument("-d", "--division", required=True, help="Your division")
 parser.add_argument("-b", "--begin", required=True, help="From wich date to begin (DD.MM.YYYY)")
 parser.add_argument("-e", "--end", required=True, help="Stop at this date (DD.MM.YYYY)")
 parser.add_argument("-i", "--input", required=True, help="Input file with activities")
-parser.add_argument("-s", "--start-with", default=1, help="Start numbering with this number")
+parser.add_argument("-s", "--start-with", default=1, type=int, help="Start numbering with this number")
 parser.add_argument("-w", "--work-hours", default=8.0, type=float, help="How many hours you work per day")
 parser.add_argument("-t", "--template", required=True, help="Template file")
 
